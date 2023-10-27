@@ -2,7 +2,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const crypto = require('nodemailer');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
@@ -12,6 +11,7 @@ const cors = require('cors');
 app.use(cors());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
+const authRoutes = require('./router/authRoutes');
 
 mongoose
   .connect(process.env.MONGODB_URI, {
@@ -24,3 +24,5 @@ mongoose
 app.listen(port, () => {
   console.log('server is listening on port', port);
 });
+
+app.use('/auth', authRoutes);

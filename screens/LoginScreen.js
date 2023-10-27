@@ -1,22 +1,63 @@
 /* eslint-disable prettier/prettier */
 import {
-  Image,
+  Alert,
   KeyboardAvoidingView,
   Pressable,
-  StyleSheet,
   Text,
   TextInput,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {useNavigation} from '@react-navigation/native';
+import axios from 'axios';
+import {BASE_URL} from '../constants';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
   const navigation = useNavigation();
+
+  const handleLogin = async () => {
+    const user = {
+      email,
+      password,
+    };
+    try {
+      const res = await axios.post(`${BASE_URL}/auth/login`, user);
+
+      const {token} = res.data;
+      await AsyncStorage.setItem('threadAuthToken', token);
+
+      console.log('success login response  FE', res.data);
+      Alert.alert('Successful', 'Login successful');
+      setEmail('');
+      setPassword('');
+      navigation.replace('Home');
+    } catch (error) {
+      console.log('error login response FE', error);
+      Alert.alert('Un-Successful', 'Login un-successful');
+    }
+  };
+
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        const token = await AsyncStorage.getItem('threadAuthToken');
+        if (token) {
+          setTimeout(() => {
+            navigation.replace('Main');
+          }, 400);
+        }
+      } catch (error) {
+        console.log('error fetching stored token', error);
+      }
+    };
+    checkLoginStatus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <View
@@ -102,6 +143,7 @@ const LoginScreen = () => {
         <View style={{marginTop: 45}} />
 
         <Pressable
+          onPress={handleLogin}
           style={{
             width: 200,
             backgroundColor: 'black',

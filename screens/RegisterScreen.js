@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
 import {
+  Alert,
   KeyboardAvoidingView,
   Pressable,
   StyleSheet,
@@ -12,12 +13,34 @@ import {useNavigation} from '@react-navigation/native';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import axios from 'axios';
+import {BASE_URL} from '../constants';
 
 const RegisterScreen = () => {
   const [email, setEmail] = useState(null);
   const [name, setName] = useState(null);
   const [password, setPassword] = useState(null);
   const navigation = useNavigation();
+
+  const handleRegister = async () => {
+    const user = {
+      email,
+      password,
+      name,
+    };
+    try {
+      const res = await axios.post(`${BASE_URL}/auth/register`, user);
+      console.log('success register response  FE', res.data);
+      Alert.alert('Successful', 'registration successful');
+      setEmail('');
+      setName('');
+      setPassword('');
+      navigation.navigate('Main');
+    } catch (error) {
+      console.log('error registering response FE', error);
+      Alert.alert('Un-Successful', 'registration un-successful');
+    }
+  };
 
   return (
     <View
@@ -122,6 +145,7 @@ const RegisterScreen = () => {
         <View style={{marginTop: 45}} />
 
         <Pressable
+          onPress={handleRegister}
           style={{
             width: 200,
             backgroundColor: 'black',
