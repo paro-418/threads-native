@@ -12,6 +12,7 @@ app.use(cors());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 const authRoutes = require('./router/authRoutes');
+const userRoutes = require('./router/userRoutes');
 
 mongoose
   .connect(process.env.MONGODB_URI, {
@@ -26,3 +27,4 @@ app.listen(port, () => {
 });
 
 app.use('/auth', authRoutes);
+app.use('/user', userRoutes);

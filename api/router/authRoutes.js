@@ -6,9 +6,8 @@ const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
 
 const routes = express.Router();
-const generateSecretKey = () => {
-  return crypto.randomBytes(32).toString('hex');
-};
+const generateSecretKey = () => crypto.randomBytes(32).toString('hex');
+
 const secretKey = generateSecretKey();
 
 const sendVerificationEmail = async (email, verificationToken) => {
@@ -65,8 +64,10 @@ routes.post('/register', async function (req, res) {
     // send the verification email
     sendVerificationEmail(newUser.email, newUser.verificationToken);
 
+    const token = await jwt.sign({userId: newUser._id}, secretKey);
     return res.status(200).json({
       message: 'Registration successful',
+      token,
     });
   } catch (error) {
     console.log('error registering backend', error);
@@ -79,7 +80,7 @@ routes.post('/register', async function (req, res) {
 routes.post('/login', async function (req, res) {
   try {
     const {email, password} = req.body;
-    console.log('register credentials received', email, password);
+    console.log('login credentials received', email, password);
 
     const user = await User.findOne({email});
     if (!user) {

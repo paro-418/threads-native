@@ -11,6 +11,7 @@ import {SafeAreaView, StatusBar, useColorScheme} from 'react-native';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import StackNavigator from './navigation/StackNavigator';
+import {UserContext} from './context/userContext';
 
 function App(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -26,7 +27,9 @@ function App(): JSX.Element {
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
       />
-      <StackNavigator />
+      <UserContext>
+        <StackNavigator />
+      </UserContext>
     </SafeAreaView>
   );
 }

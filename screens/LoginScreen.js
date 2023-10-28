@@ -35,7 +35,7 @@ const LoginScreen = () => {
       Alert.alert('Successful', 'Login successful');
       setEmail('');
       setPassword('');
-      navigation.replace('Home');
+      navigation.replace('Main');
     } catch (error) {
       console.log('error login response FE', error);
       Alert.alert('Un-Successful', 'Login un-successful');
