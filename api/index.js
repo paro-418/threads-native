@@ -13,6 +13,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 const authRoutes = require('./router/authRoutes');
 const userRoutes = require('./router/userRoutes');
+const postRoutes = require('./router/postRoutes');
 
 mongoose
   .connect(process.env.MONGODB_URI, {
@@ -28,3 +29,4 @@ app.listen(port, () => {
 
 app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
+app.use('/post', postRoutes);
