@@ -6,13 +6,14 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {UserType} from '../context/userContext';
 import axios from 'axios';
 import {BASE_URL} from '../constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from 'jwt-decode';
 import User from '../components/User';
+import {useFocusEffect} from '@react-navigation/native';
 
 const ActivityScreen = () => {
   const [selectedButton, setSelectedButton] = useState('people');
@@ -23,19 +24,25 @@ const ActivityScreen = () => {
   const handleButtonClick = buttonName => {
     setSelectedButton(buttonName);
   };
+  const fetchUsers = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/user/${userId}`);
+      console.log('received user response FE', res.data);
+      setUsers(res.data.users);
+    } catch (error) {
+      console.log('error fetching user ActivityScreen FE', error);
+    }
+  };
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const res = await axios.get(`${BASE_URL}/user/${userId}`);
-        console.log('received user response FE', res.data);
-        setUsers(res.data.users);
-      } catch (error) {
-        console.log('error fetching user FE', error);
-      }
-    };
     fetchUsers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  useFocusEffect(
+    useCallback(() => {
+      fetchUsers();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []),
+  );
   return (
     <ScrollView>
       <View style={{padding: 10}}>

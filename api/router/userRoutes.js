@@ -77,4 +77,27 @@ routes.post('/unfollow', async function (req, res) {
   }
 });
 
+routes.get('/profile/:userId', async function (req, res) {
+  try {
+    const {userId} = req.params;
+    console.log('received userId for profile', userId);
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        message: 'user not found',
+      });
+    }
+
+    return res.status(200).json({
+      message: 'user found successfully',
+      user,
+    });
+  } catch (error) {
+    console.log('error fetching profile details', error);
+    return res.status(500).json({
+      message: 'error getting profile details',
+    });
+  }
+});
+
 module.exports = routes;

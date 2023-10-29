@@ -27,9 +27,10 @@ routes.post('/create', async function (req, res) {
   }
 });
 
-routes.put('/post/:postId/like', async function (req, res) {
+routes.put('/:postId/:userId/like', async function (req, res) {
   try {
     const {postId, userId} = req.params;
+    console.log('received postId, userId to like', postId, userId);
 
     const post = await Post.findById(postId).populate('user', 'name');
     const updatedPost = await Post.findByIdAndUpdate(
@@ -60,9 +61,10 @@ routes.put('/post/:postId/like', async function (req, res) {
   }
 });
 
-routes.put('/post/:postId/unlike', async function (req, res) {
+routes.put('/:postId/:userId/unlike', async function (req, res) {
   try {
     const {postId, userId} = req.params;
+    console.log('received postId, userId to un-like', postId, userId);
 
     const post = await Post.findById(postId).populate('user', 'name');
     const updatedPost = await Post.findByIdAndUpdate(
@@ -82,7 +84,7 @@ routes.put('/post/:postId/unlike', async function (req, res) {
     updatedPost.user = post.user;
 
     return res.status(200).json({
-      message: 'successfully liked post',
+      message: 'successfully un-liked post',
       updatedPost,
     });
   } catch (error) {

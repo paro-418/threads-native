@@ -15,6 +15,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
 import {BASE_URL} from '../constants';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const RegisterScreen = () => {
   const [email, setEmail] = useState(null);
@@ -30,6 +31,8 @@ const RegisterScreen = () => {
     };
     try {
       const res = await axios.post(`${BASE_URL}/auth/register`, user);
+       const {token} = res.data;
+       await AsyncStorage.setItem('threadAuthToken', token);
       console.log('success register response  FE', res.data);
       Alert.alert('Successful', 'registration successful');
       setEmail('');
